@@ -160,15 +160,15 @@ function revealAnswers() {
         
         // If checkbox is checked and has the attribute data-correct="true"
         if (checkbox.checked && checkbox.getAttribute('data-correct') === "true") {
-            listItem.style.color = 'green';
+            listItem.style.color = '#ace8b9';
         } 
         // If the checkbox is not checked and has the attribute data-correct="true"
         else if (!checkbox.checked && checkbox.getAttribute('data-correct') === "true") {
-            listItem.style.color = 'red';
+            listItem.style.color = '#e0b4be';
         } 
         // If the checkbox is checked and does not have the attributed data-correct="true"
         else if (checkbox.checked && !checkbox.hasAttribute('data-correct')) {
-            listItem.style.color = 'red';
+            listItem.style.color = '#e0b4be';
         } 
         // Reset the color for other cases (optional, in case you want to use the button multiple times)
         else {

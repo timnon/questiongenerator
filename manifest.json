@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Question Creator",
+  "name": "Question Generator",
   "version": "3.0",
   "description": "Scrapes webpage content and creates questions.",
   "options_page": "options.html", 
