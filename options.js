@@ -21,7 +21,7 @@ const saveOptions = () => {
   // stored in chrome.storage.
   const restoreOptions = () => {
     chrome.storage.sync.get(
-      { openai_api_key: 'put your openai api key here', openai_model: 'gpt-4', questions_tag_id: 'article'},
+      { openai_api_key: 'put your openai api key here', openai_model: 'gpt-3.5-turbo', questions_tag_id: 'body'},
       (items) => {
         document.getElementById('openai_api_key').value = items.openai_api_key;
         document.getElementById('openai_model').value = items.openai_model;

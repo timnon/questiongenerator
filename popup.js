@@ -33,6 +33,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
             async function getOptionItems(html) {
                 const items = await getStorageData(['openai_api_key', 'openai_model','questions_tag_id']);
+
+                if (Object.keys(items).length === 0) {
+                    alert('Set extension options first');
+                    return '';
+                }
                 const openai_api_key = items.openai_api_key;
                 const openai_model = items.openai_model;
                 const questions_tag_id = items.questions_tag_id;
@@ -51,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         element = elementsByTagName[0];
                     }
                 }
-
+                
                 //var articleElement = document.getElementById(questions_tag_id);
                 let contentHtml = element.textContent;
                 let doc2 = parser.parseFromString(contentHtml, 'text/html');
@@ -88,27 +93,39 @@ document.addEventListener("DOMContentLoaded", function() {
             
                 Create three multiple choice question of the previous content in the style of the example questions:
                 `
-                const messages = [{"role": "user", "content": prompt}];
-                const endpoint = "https://api.openai.com/v1/chat/completions";
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${openai_api_key}`,
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        model: openai_model,
-                        messages: messages,
-                        temperature: 1,
-                        max_tokens: 500,
-                        top_p: 1.0,
-                        frequency_penalty: 0.0,
-                        presence_penalty: 0.0
-                    })
-                });
 
-                const data = await response.json();
-                const questions = data.choices[0].message.content
+                var questions;
+                try {
+                    const messages = [{"role": "user", "content": prompt}];
+                    const endpoint = "https://api.openai.com/v1/chat/completions";
+                    const response = await fetch(endpoint, {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${openai_api_key}`,
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            model: openai_model,
+                            messages: messages,
+                            temperature: 1,
+                            max_tokens: 500,
+                            top_p: 1.0,
+                            frequency_penalty: 0.0,
+                            presence_penalty: 0.0
+                        })
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                        throw new Error("Unexpected response structure from the API.");
+                    }
+                    questions = data.choices[0].message.content;
+                } catch (error) {
+                    // Handle errors here. For example, showing an alert.
+                    alert(`Something went wrong with OpenAI api call: ${error.message}`);
+                }
                 //questions = `1. Snowflake's architecture combines elements of which two traditional database architectures? A. Shared-disk and shared-nothing (correct) B. Shared-memory and shared-storage C. Shared-nothing and shared-metadata D. Shared-database and shared-filesystem 2. Which layer of Snowflake's architecture is responsible for managing data storage? A. Query Processing B. Cloud Services C. Database Storage (correct) D. Virtual Warehouses 3. How can customers connect to the Snowflake service? A. Only through the web-based user interface B. Only through ODBC and JDBC drivers C. Only through native connectors such as Python or Spark (correct) D. Only through third-party connectors such as ETL tools or BI tools`
                 
                 function formatAsHtml(inputStr) {
